@@ -1,11 +1,11 @@
-Ian's Dotfiles
+Dotfiles
 ==============
 
 These are my dotfiles. There are many like them, but these are mine.
 
 Modeled a little after http://github.com/jbalogh/dotfiles
 
-This is my treasure trove. I git clone it to ~/.dotfiles and then do
+git clone it to ~/.dotfiles and then do
 
 cd ~/.dotfiles
 for f in * .*
