@@ -54,6 +54,20 @@ nmap <M-o> <C-w><C-w>
 imap <C-e> <C-o>$
 
 " Emacs-like bindings in command line -- `:help emacs-keys`
+"nnoremap <C-a> <esc>I
+"nnoremap <C-e> <esc>A
+cmap <C-a> <Home>
+cmap <C-e> <End>
+imap <C-a> <Home>
+vmap <C-a> <Home>
+omap <C-a> <Home>
+imap <C-e> <End>
+vmap <C-e> <End>
+omap <C-e> <End>
+inoremap <C-d> <Del>
+vnoremap <C-d> <Del>
+onoremap <C-d> <Del>
+
 cnoremap <C-a>  <Home>
 cnoremap <C-b>  <Left>
 cnoremap <C-f>  <Right>
@@ -66,6 +80,10 @@ cnoremap <Esc>b <S-Left>
 cnoremap <Esc>f <S-Right>
 cnoremap <Esc>d <S-right><Delete>
 cnoremap <C-g>  <C-c>
+
+" Easier than defaults
+noremap H ^
+noremap L $
 
 " Why not use the space or return keys to toggle folds?
 nnoremap <space> za

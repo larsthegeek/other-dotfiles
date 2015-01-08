@@ -48,18 +48,18 @@ class ShellRenderer(Renderer):
 			client_id = segment_info.get('client_id')
 		else:
 			client_id = None
-		local_key = (client_id, side, None if theme is self.theme else id(theme))
-		key = (client_id, side, None)
-		did_width = False
-		if local_key[-1] != key[-1] and side == 'left':
-			try:
-				width = self.old_widths[key]
-			except KeyError:
-				pass
-			else:
-				did_width = True
-		if not did_width:
-			if width is not None:
+		if client_id is not None:
+			local_key = (client_id, side, None if theme is self.theme else id(theme))
+			key = (client_id, side, None)
+			did_width = False
+			if local_key[-1] != key[-1] and side == 'left':
+				try:
+					width = self.old_widths[key]
+				except KeyError:
+					pass
+				else:
+					did_width = True
+			if not did_width and width is not None:
 				if theme.cursor_space_multiplier is not None:
 					width = int(width * theme.cursor_space_multiplier)
 				elif theme.cursor_columns:
@@ -78,14 +78,15 @@ class ShellRenderer(Renderer):
 			side=side,
 			**kwargs
 		)
-		self.old_widths[local_key] = res[-1]
+		if client_id is not None:
+			self.old_widths[local_key] = res[-1]
 		ret = res if output_width else res[:-1]
 		if len(ret) == 1:
 			return ret[0]
 		else:
 			return ret
 
-	def hlstyle(self, fg=None, bg=None, attr=None):
+	def hlstyle(self, fg=None, bg=None, attrs=None):
 		'''Highlight a segment.
 
 		If an argument is None, the argument is ignored. If an argument is
@@ -111,17 +112,17 @@ class ShellRenderer(Renderer):
 					ansi += [48, 2] + list(int_to_rgb(bg[1]))
 				else:
 					ansi += [48, 5, bg[0]]
-		if attr is not None:
-			if attr is False:
+		if attrs is not None:
+			if attrs is False:
 				ansi += [22]
 			else:
-				if attr & ATTR_BOLD:
+				if attrs & ATTR_BOLD:
 					ansi += [1]
-				elif attr & ATTR_ITALIC:
+				elif attrs & ATTR_ITALIC:
 					# Note: is likely not to work or even be inverse in place of
 					# italic. Omit using this in colorschemes.
 					ansi += [3]
-				elif attr & ATTR_UNDERLINE:
+				elif attrs & ATTR_UNDERLINE:
 					ansi += [4]
 		if is_fbterm:
 			r = []
