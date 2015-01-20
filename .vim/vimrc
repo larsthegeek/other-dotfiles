@@ -34,6 +34,7 @@ nmap \x :w<CR>:%! xmllint --format - <CR>
 nmap \Y :vertical resize 40<CR>:wincmd l<CR>
 nmap \y :exec "vertical resize " . (80 + (&number * &numberwidth))<CR>:wincmd l<CR>
 nmap \z :w<CR>:!open %<CR><CR>
+nmap \<space> :nohlsearch<CR><CR>:<backspace>
 
 " You don't know what you're missing if you don't use this.
 nmap <C-e> :e#<CR>
@@ -87,7 +88,7 @@ noremap L $
 
 " Why not use the space or return keys to toggle folds?
 nnoremap <space> za
-nnoremap <CR> za
+" nnoremap <CR> za
 vnoremap <space> zf
 
 " Window movement shortcuts from Mark
