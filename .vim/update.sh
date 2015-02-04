@@ -36,27 +36,31 @@ fi
 # don't work.
 repos=(
 
-  https://github.com/powerline/powerline.git
+  https://github.com/Lokaltog/vim-easymotion.git
   https://github.com/airblade/vim-gitgutter.git
   https://github.com/altercation/vim-colors-solarized.git
   https://github.com/ap/vim-css-color.git
+  https://github.com/bronson/vim-trailing-whitespace.git
   https://github.com/docunext/closetag.vim.git
   https://github.com/elixir-lang/vim-elixir.git
   https://github.com/elzr/vim-json.git
   https://github.com/ervandew/supertab
+  https://github.com/garbas/vim-snipmate.git
   https://github.com/groenewege/vim-less.git
-  https://github.com/junegunn/goyo.vim.git
   https://github.com/jnurmine/Zenburn.git
+  https://github.com/junegunn/goyo.vim.git
   https://github.com/kchmck/vim-coffee-script.git
   https://github.com/kien/ctrlp.vim.git
   https://github.com/leafgarland/typescript-vim.git
   https://github.com/ngmy/vim-rubocop.git
   https://github.com/nono/vim-handlebars.git
   https://github.com/pangloss/vim-javascript.git
+  https://github.com/powerline/powerline.git
   https://github.com/rking/ag.vim.git
   https://github.com/scrooloose/nerdcommenter.git
   https://github.com/scrooloose/nerdtree.git
   https://github.com/scrooloose/syntastic.git
+  https://github.com/terryma/vim-multiple-cursors.git
   https://github.com/tomasr/molokai.git
   https://github.com/tpope/vim-fugitive.git
   https://github.com/tpope/vim-haml.git
@@ -71,7 +75,6 @@ repos=(
   https://github.com/vim-scripts/keepcase.vim.git
   https://github.com/vim-scripts/oceandeep.git
   https://github.com/wavded/vim-stylus.git
-
   )
 
 # Here's a list of everything else to download in the format

@@ -275,7 +275,24 @@ set tabstop=4               " The One True Tab
 set notitle                 " Don't set the title of the Vim window
 set wildmenu                " Show possible completions on command line
 set wildmode=list:longest,full " List all options and complete
-set wildignore=*.class,*.o,*~,*.pyc,.git,node_modules  " Ignore certain files in tab-completion
+set wildignore+=*~,*/tmp/*,*.so,*.swp,*.zip
+set wildignore+=.hg,.git,.svn                    " Version control
+set wildignore+=*.aux,*.out,*.toc                " LaTeX intermediate files
+set wildignore+=*.luac                           " Lua byte code
+set wildignore+=*.o,*.obj,*.exe,*.dll,*.manifest " compiled object files
+set wildignore+=*.class,node_modules             " class files
+set wildignore+=*.pyc                            " Python byte code
+set wildignore+=*.spl                            " compiled spelling word lists
+set wildignore+=*.sw?                            " Vim swap files
+set wildignore+=*.DS_Store?                      " OSX bullshit
+set wildignore+=vendor/rails/**,public/assets/**,public/data/**
+
+set wildignore+=solr/**,log/**,*.psd,*.PSD,.git/**,.gitkeep,.gems/**
+set wildignore+=*.ico,*.ICO,backup/**,*.sql,*.dump,*.tmp,*.min.js,Gemfile.lock
+set wildignore+=*.png,*.PNG,*.JPG,*.jpg,*.JPEG,*.jpeg,*.GIF,*.gif,*.pdf,*.PDF
+set wildignore+=vendor/**,coverage/**,tmp/**,rdoc/**,*.BACKUP.*,*.BASE.*,*.LOCAL.*,*.REMOTE.*,.sass-cache/**
+
+
 
 " Section: Commands & Functions {{{1
 "--------------------------------------------------------------------------
@@ -332,6 +349,10 @@ import sys
 sys.path.append(os.path.join(os.getenv('HOME'), '.vim', 'python'))
 EOF
 endif
+
+" Section: Rails specifics {{{1
+"--------------------------------------------------------------------------
+autocmd User Rails let b:surround_{char2nr('-')} = "<% \r %>" " displays <% %> correctly
 
 " Section: Plugin settings {{{1
 "--------------------------------------------------------------------------
