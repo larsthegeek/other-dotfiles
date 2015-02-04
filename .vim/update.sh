@@ -37,9 +37,11 @@ fi
 repos=(
 
   https://github.com/Lokaltog/vim-easymotion.git
+  https://github.com/MarcWeber/vim-addon-mw-utils.git
   https://github.com/airblade/vim-gitgutter.git
   https://github.com/altercation/vim-colors-solarized.git
   https://github.com/ap/vim-css-color.git
+  https://github.com/bling/vim-airline.git
   https://github.com/bronson/vim-trailing-whitespace.git
   https://github.com/docunext/closetag.vim.git
   https://github.com/elixir-lang/vim-elixir.git
@@ -55,7 +57,6 @@ repos=(
   https://github.com/ngmy/vim-rubocop.git
   https://github.com/nono/vim-handlebars.git
   https://github.com/pangloss/vim-javascript.git
-  https://github.com/powerline/powerline.git
   https://github.com/rking/ag.vim.git
   https://github.com/scrooloose/nerdcommenter.git
   https://github.com/scrooloose/nerdtree.git
