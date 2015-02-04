@@ -3092,6 +3092,14 @@ function! s:projection_pairs(options)
   return pairs
 endfunction
 
+function! s:r_warning(cmd) abort
+  if empty(a:cmd) && !exists('s:r_warning')
+    let s:r_warning = 1
+    return '|echohl WarningMsg|echomsg ":R navigation commands are deprecated. Use :E commands instead."|echohl None'
+  endif
+  return ''
+endfunction
+
 function! s:readable_open_command(cmd, argument, name, projections) dict abort
   let cmd = s:editcmdfor(a:cmd)
   let djump = ''
@@ -3123,7 +3131,7 @@ function! s:readable_open_command(cmd, argument, name, projections) dict abort
     endif
     if !empty(file) && self.app().has_path(file)
       let file = fnamemodify(self.app().path(file), ':.')
-      return cmd . ' ' . s:fnameescape(file) . '|exe ' . s:sid . 'djump('.string(djump) . ')'
+      return cmd . ' ' . s:fnameescape(file) . '|exe ' . s:sid . 'djump('.string(djump) . ')'.s:r_warning(a:cmd)
     endif
   endfor
   if empty(argument)
@@ -3163,7 +3171,7 @@ function! s:readable_open_command(cmd, argument, name, projections) dict abort
       endif
       call map(template, 's:gsub(v:val, "\t", "  ")')
       let file = fnamemodify(simplify(file), ':.')
-      return cmd . ' ' . s:fnameescape(file) . '|call setline(1, '.string(template).')' . '|set nomod'
+      return cmd . ' ' . s:fnameescape(file) . '|call setline(1, '.string(template).')' . '|set nomod'.s:r_warning(a:cmd)
     endif
   endfor
   return 'echoerr '.string("Couldn't find destination directory for ".a:name.' '.a:argument)
@@ -3722,7 +3730,7 @@ endfunction
 function! s:helpermethods()
   return ""
         \."action_name asset_path asset_url atom_feed audio_path audio_tag audio_url auto_discovery_link_tag "
-        \."button_tag button_to button_to_function "
+        \."button_tag button_to "
         \."cache cache_fragment_name cache_if cache_unless capture cdata_section check_box check_box_tag collection_check_boxes collection_radio_buttons collection_select color_field color_field_tag compute_asset_extname compute_asset_host compute_asset_path concat content_for content_tag content_tag_for controller controller_name controller_path convert_to_model cookies csrf_meta_tag csrf_meta_tags current_cycle cycle "
         \."date_field date_field_tag date_select datetime_field datetime_field_tag datetime_local_field datetime_local_field_tag datetime_select debug distance_of_time_in_words distance_of_time_in_words_to_now div_for dom_class dom_id "
         \."email_field email_field_tag escape_javascript escape_once excerpt "
@@ -3731,7 +3739,7 @@ function! s:helpermethods()
         \."headers hidden_field hidden_field_tag highlight "
         \."image_alt image_path image_submit_tag image_tag image_url "
         \."j javascript_cdata_section javascript_include_tag javascript_path javascript_tag javascript_url "
-        \."l label label_tag link_to link_to_function link_to_if link_to_unless link_to_unless_current localize logger "
+        \."l label label_tag link_to link_to_if link_to_unless link_to_unless_current localize logger "
         \."mail_to month_field month_field_tag "
         \."number_field number_field_tag number_to_currency number_to_human number_to_human_size number_to_percentage number_to_phone number_with_delimiter number_with_precision "
         \."option_groups_from_collection_for_select options_for_select options_from_collection_for_select "
@@ -4110,7 +4118,6 @@ function! s:app_db_url(...) dict abort
   if !has_key(config, 'adapter')
     return ''
   endif
-  let url = ''
   let adapter = tr(remove(config, 'adapter'), '_', '-')
   let url = adapter . ':'
   if adapter =~# '^sqlite'
@@ -4138,7 +4145,7 @@ function! s:app_db_url(...) dict abort
       let url .= '[' . remove(config, 'host') . ']'
     elseif has_key(config, 'host')
       let url .= s:url_encode(remove(config, 'host'))
-    elseif url =~# '@$'
+    elseif url =~# '@$' || has_key(config, 'port')
       let url .= 'localhost'
     endif
     if has_key(config, 'port')
