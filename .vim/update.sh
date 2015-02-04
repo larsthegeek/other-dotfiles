@@ -38,8 +38,6 @@ repos=(
 
   https://github.com/Lokaltog/vim-easymotion.git
   https://github.com/MarcWeber/vim-addon-mw-utils.git
-  https://github.com/Shougo/unite.vim.git
-  https://github.com/Shougo/vimproc.vim.git
   https://github.com/airblade/vim-gitgutter.git
   https://github.com/altercation/vim-colors-solarized.git
   https://github.com/ap/vim-css-color.git
@@ -51,9 +49,11 @@ repos=(
   https://github.com/ervandew/supertab
   https://github.com/garbas/vim-snipmate.git
   https://github.com/groenewege/vim-less.git
+  https://github.com/honza/vim-snippets.git
   https://github.com/jnurmine/Zenburn.git
   https://github.com/junegunn/goyo.vim.git
   https://github.com/kchmck/vim-coffee-script.git
+  https://github.com/kien/ctrlp.vim.git
   https://github.com/leafgarland/typescript-vim.git
   https://github.com/ngmy/vim-rubocop.git
   https://github.com/nono/vim-handlebars.git
@@ -64,6 +64,7 @@ repos=(
   https://github.com/scrooloose/syntastic.git
   https://github.com/terryma/vim-multiple-cursors.git
   https://github.com/tomasr/molokai.git
+  https://github.com/tomtom/tlib_vim.git
   https://github.com/tpope/vim-fugitive.git
   https://github.com/tpope/vim-haml.git
   https://github.com/tpope/vim-liquid.git
@@ -80,8 +81,8 @@ repos=(
   )
 
 # DISABLED
-# https://github.com/kien/ctrlp.vim.git
-
+# https://github.com/Shougo/unite.vim.git
+# https://github.com/Shougo/vimproc.vim.git
 
 # Here's a list of everything else to download in the format
 # <destination>;<url>[;<filename>]
@@ -166,9 +167,9 @@ case "$1" in
     $me other
 
     # make vimproc
-    pushd ~/.vim/bundle/vimproc.vim
-    make
-    popd
+    # pushd ~/.vim/bundle/vimproc.vim
+    # make
+    # popd
 
     echo
     echo "Update OK"

@@ -388,24 +388,23 @@ let Tlist_WinWidth = 30
 let NERDTreeIgnore = ['\~$', '\.pyc$']
 
 " ctrlp.vim (replaces FuzzyFinder and Command-T)
-"let g:ctrlp_map = '<Leader>t'
-"let g:ctrlp_match_window_bottom = 0
-"let g:ctrlp_match_window_reversed = 0
-"let g:ctrlp_custom_ignore = '\v\~$|\.(o|swp|pyc|wav|mp3|ogg|blend)$|(^|[/\\])\.(hg|git|bzr)($|[/\\])|__init__\.py'
-"let g:ctrlp_working_path_mode = 'ra' 
-"let g:ctrlp_dotfiles = 0
-"let g:ctrlp_switch_buffer = 0
-"nmap ; :CtrlPBuffer<CR>
+let g:ctrlp_map = '<Leader>t'
+let g:ctrlp_match_window_bottom = 0
+let g:ctrlp_match_window_reversed = 0
+let g:ctrlp_custom_ignore = '\v\~$|\.(o|swp|pyc|wav|mp3|ogg|blend)$|(^|[/\\])\.(hg|git|bzr)($|[/\\])|__init__\.py'
+let g:ctrlp_working_path_mode = 'ra' 
+let g:ctrlp_dotfiles = 0
+let g:ctrlp_switch_buffer = 0
+nmap ; :CtrlPBuffer<CR>
 
 " Unite
 " nnoremap <silent> <Leader>m :Unite -buffer-name=recent -winheight=10 file_mru<cr>
-nnoremap <Leader>b :Unite -buffer-name=buffers -winheight=10 buffer<cr>
-nnoremap <Leader>f :Unite grep:.<cr>
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-call unite#filters#sorter_default#use(['sorter_rank'])
-call unite#custom#source('file_rec/async','sorters','sorter_rank')
-" replacing ctrl-p with unite
-nnoremap <Leader>t :Unite -start-insert -buffer-name=files -winheight=10 file_rec/async<cr>
+" nnoremap <Leader>b :Unite -buffer-name=buffers -winheight=10 buffer<cr>
+" nnoremap <Leader>f :Unite grep:.<cr>
+" call unite#filters#matcher_default#use(['matcher_fuzzy'])
+" call unite#filters#sorter_default#use(['sorter_rank'])
+" call unite#custom#source('file_rec/async','sorters','sorter_rank')
+" nnoremap <Leader>t :Unite -start-insert -buffer-name=files -winheight=10 file_rec/async<cr>
 
 " Syntastic
 let g:syntastic_enable_signs=1
