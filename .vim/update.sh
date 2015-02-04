@@ -38,6 +38,8 @@ repos=(
 
   https://github.com/Lokaltog/vim-easymotion.git
   https://github.com/MarcWeber/vim-addon-mw-utils.git
+  https://github.com/Shougo/unite.vim.git
+  https://github.com/Shougo/vimproc.vim.git
   https://github.com/airblade/vim-gitgutter.git
   https://github.com/altercation/vim-colors-solarized.git
   https://github.com/ap/vim-css-color.git
@@ -52,7 +54,6 @@ repos=(
   https://github.com/jnurmine/Zenburn.git
   https://github.com/junegunn/goyo.vim.git
   https://github.com/kchmck/vim-coffee-script.git
-  https://github.com/kien/ctrlp.vim.git
   https://github.com/leafgarland/typescript-vim.git
   https://github.com/ngmy/vim-rubocop.git
   https://github.com/nono/vim-handlebars.git
@@ -77,6 +78,10 @@ repos=(
   https://github.com/vim-scripts/oceandeep.git
   https://github.com/wavded/vim-stylus.git
   )
+
+# DISABLED
+# https://github.com/kien/ctrlp.vim.git
+
 
 # Here's a list of everything else to download in the format
 # <destination>;<url>[;<filename>]
@@ -159,6 +164,12 @@ case "$1" in
   all)
     $me repos
     $me other
+
+    # make vimproc
+    pushd ~/.vim/bundle/vimproc.vim
+    make
+    popd
+
     echo
     echo "Update OK"
     ;;
