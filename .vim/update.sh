@@ -55,6 +55,7 @@ repos=(
   https://github.com/kchmck/vim-coffee-script.git
   https://github.com/kien/ctrlp.vim.git
   https://github.com/leafgarland/typescript-vim.git
+  https://github.com/mileszs/ack.vim.git
   https://github.com/ngmy/vim-rubocop.git
   https://github.com/nono/vim-handlebars.git
   https://github.com/pangloss/vim-javascript.git
@@ -73,6 +74,7 @@ repos=(
   https://github.com/tpope/vim-rails.git
   https://github.com/tpope/vim-sleuth.git
   https://github.com/tpope/vim-surround.git
+  https://github.com/tpope/vim-unimpaired.git
   https://github.com/vim-scripts/Railscasts-Theme-GUIand256color.git
   https://github.com/vim-scripts/bufkill.vim.git
   https://github.com/vim-scripts/keepcase.vim.git

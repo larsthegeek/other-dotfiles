@@ -5,7 +5,7 @@
 "  \ V /| | | | | | | | | (__
 "   \_/ |_|_| |_| |_|_|  \___|
 "
-" Ian's .vimrc file
+" James' .vimrc file
 "
 " Section: Key mappings {{{1
 "--------------------------------------------------------------------------
@@ -14,7 +14,9 @@
 nmap \a :set formatoptions-=a<CR>:echo "autowrap disabled"<CR>
 nmap \A :set formatoptions+=a<CR>:echo "autowrap enabled"<CR>
 nmap \b :set nocin tw=80<CR>:set formatoptions+=a<CR>
-nmap \c :CoffeeWatch<CR>
+" nmap \c :CoffeeWatch<CR>
+nmap \c :set cursorline!<CR>
+nmap \C :set cursorcolumn!<CR>
 nmap \d :%!perltidy<CR>
 nmap \e :NERDTreeToggle<CR>
 nmap \f mt:Goyo 100<CR>'tzz
@@ -40,8 +42,11 @@ nmap \<space> :nohlsearch<CR><CR>:<backspace>
 nmap <C-e> :e#<CR>
 
 " Move between open buffers.
-map <C-n> :bnext<CR>
-map <C-p> :bprev<CR>
+map <C-,> :bnext<CR>
+map <C-.> :bprev<CR>
+
+" Map escape from insert mode
+inoremap jj <ESC>
 
 " Emacs-like bindings in normal mode
 nmap <C-x>0 <C-w>c
@@ -55,25 +60,25 @@ nmap <M-o> <C-w><C-w>
 imap <C-e> <C-o>$
 
 " Emacs-like bindings in command line -- `:help emacs-keys`
-"nnoremap <C-a> <esc>I
-"nnoremap <C-e> <esc>A
-cmap <C-a> <Home>
-cmap <C-e> <End>
-imap <C-a> <Home>
-vmap <C-a> <Home>
-omap <C-a> <Home>
-imap <C-e> <End>
-vmap <C-e> <End>
-omap <C-e> <End>
-inoremap <C-d> <Del>
-vnoremap <C-d> <Del>
-onoremap <C-d> <Del>
+cnoremap <C-a> <Home>
+inoremap <C-a> <Home>
+nnoremap <C-a> <Home>
+onoremap <C-a> <Home>
+vnoremap <C-a> <Home>
 
-cnoremap <C-a>  <Home>
+cnoremap <C-e> <End>
+inoremap <C-e> <End>
+nnoremap <C-e> <End>
+onoremap <C-e> <End>
+vnoremap <C-e> <End>
+
+cnoremap <C-d> <Del>
+inoremap <C-d> <Del>
+onoremap <C-d> <Del>
+vnoremap <C-d> <Del>
+
 cnoremap <C-b>  <Left>
 cnoremap <C-f>  <Right>
-cnoremap <C-d>  <Del>
-cnoremap <C-e>  <End>
 cnoremap <M-b>  <S-Left>
 cnoremap <M-f>  <S-Right>
 cnoremap <M-d>  <S-right><Delete>
@@ -85,6 +90,10 @@ cnoremap <C-g>  <C-c>
 " Easier than defaults
 noremap H ^
 noremap L $
+
+" Use Q for formatting the current paragraph (or selection)
+vmap Q gq
+nmap Q gqap
 
 " Why not use the space or return keys to toggle folds?
 nnoremap <space> za
@@ -108,6 +117,10 @@ nmap <Esc>p :cprevious<CR>
 nmap <D-~> :cnext<CR>
 nmap <D-π> :cprevious<CR>
 nmap <D-ç> :cclose<CR>
+
+" Steal => from textmate
+nnoremap <C-l> <C-w>l
+imap <C-l> <Space>=><Space>
 
 " Alt-W to delete a buffer and remove it from the list but keep the window
 " (courtesy bufkill.vim)
@@ -175,8 +188,8 @@ map k gk
 
 " having Ex mode start or showing me the command history
 " is a complete pain in the ass if i mistype
-map Q <silent>
-map q: <silent>
+" map Q <silent>
+" map q: <silent>
 map K <silent>
 "map q <silent>
 
@@ -227,6 +240,18 @@ set cinkeys-=0#             " Comments don't fiddle with indenting
 set cino=(0                 " Indent newlines after opening parenthesis
 set commentstring=\ \ #%s   " When folds are created, add them to this
 set copyindent              " Make autoindent use the same chars as prev line
+
+highlight CursorLine   cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
+highlight CursorColumn cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
+
+augroup CursorLine
+    au!
+    au InsertEnter * highlight CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
+    au InsertLeave * highlight CursorLine cterm=NONE ctermbg=NONE ctermfg=NONE guibg=NONE guifg=NONE
+    au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+    au WinLeave * setlocal nocursorline
+augroup END
+
 set directory-=.            " Don't store temp files in cwd
 set encoding=utf8           " UTF-8 by default
 set expandtab               " No tabs
@@ -253,24 +278,25 @@ set listchars=tab:▶\ ,trail:◀,extends:»,precedes:«
                             " Unicode characters for various things
 set matchtime=2             " Tenths of second to hilight matching paren
 set modelines=5             " How many lines of head & tail to look for ml's
-silent! set mouse=nvc       " Use the mouse, but not in insert mode
-set nobackup                " No backups left after done editing
+" silent! set mouse=nvc       " Use the mouse, but not in insert mode
+set mouse=a
 set nonumber                " No line numbers to start
 set visualbell t_vb=        " No flashing or beeping at all
-set nowritebackup           " No backups made while editing
 set printoptions=paper:letter " US paper
 set ruler                   " Show row/col and percentage
 set scroll=4                " Number of lines to scroll with ^U/^D
 set scrolloff=15            " Keep cursor away from this many chars top/bot
 set shiftround              " Shift to certain columns, not just n spaces
 set shiftwidth=4            " Number of spaces to shift for autoindent or >,<
-set shortmess+=A            " Don't bother me when a swapfile exists
+set shortmess+=A            " Don't bother me when a swapfile exists"{{{
 set showbreak=              " Show for lines that have been wrapped, like Emacs
 set showmatch               " Hilight matching braces/parens/etc.
 set sidescrolloff=3         " Keep cursor away from this many chars left/right
-set smartcase               " Lets you search for ALL CAPS
+set smartcase               " Lets you search for ALL CAPS"}}}
 set softtabstop=4           " Spaces 'feel' like tabs
 set suffixes+=.pyc          " Ignore these files when tab-completing
+set ttyfast
+set ttymouse=xterm2
 set tabstop=4               " The One True Tab
 set notitle                 " Don't set the title of the Vim window
 set wildmenu                " Show possible completions on command line
@@ -292,11 +318,24 @@ set wildignore+=*.ico,*.ICO,backup/**,*.dump,*.tmp,*.min.js
 set wildignore+=*.png,*.PNG,*.JPG,*.jpg,*.JPEG,*.jpeg,*.GIF,*.gif,*.pdf,*.PDF
 set wildignore+=vendor/**,coverage/**,tmp/**,rdoc/**,*.BACKUP.*,*.BASE.*,*.LOCAL.*,*.REMOTE.*,.sass-cache/**
 
+"" BACKUPS
+set nobackup              " no backup after close
+set writebackup           " do keep backup while working
+
+" Store temporary files in a central spot
+set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+
+" Set tag files
+" set tags=TAGS,tags,.tags,./.tags/gems.tags,./TAGS,./tags,./gems.tags,tmp/tags,./tmp/tags
+set tags=.tags,tags,TAGS;~/
+
+
 " Section: Commands & Functions {{{1
 "--------------------------------------------------------------------------
 
 " i always, ALWAYS hit ":W" instead of ":w"
-command! Q q
+" command! Q q
 command! W w
 
 " http://stackoverflow.com/questions/1005/getting-root-permissions-on-a-file-inside-of-vi
@@ -348,9 +387,30 @@ sys.path.append(os.path.join(os.getenv('HOME'), '.vim', 'python'))
 EOF
 endif
 
-" Section: Rails specifics {{{1
+" Section: Ruby/Rails specifics {{{1
 "--------------------------------------------------------------------------
 autocmd User Rails let b:surround_{char2nr('-')} = "<% \r %>" " displays <% %> correctly
+
+" Additional Ruby Syntax Highlighting
+autocmd BufRead,BufNewFile {Capfile,Gemfile,Rakefile,Thorfile,config.ru,.caprc,.irbrc,irb_tempfile*} set ft=ruby
+
+" RDOC Syntax Highlighting
+autocmd BufRead,BufNewFile *.rd,*.rdoc     set filetype=rdoc
+
+" Folding for Tomdoc and other ruby comments
+autocmd FileType ruby,eruby set foldmethod=expr | set foldexpr=getline(v:lnum)=~'^\\s*#'
+
+" Uses jquery syntax file to javascript
+autocmd BufRead,BufNewFile jquery.*.js set ft=javascript syntax=jquery
+
+autocmd Filetype sh set ts=4 shiftwidth=2 expandtab
+autocmd Filetype lisp,ruby,xml,html set ts=4 shiftwidth=2 expandtab
+autocmd Filetype python set ts=4 shiftwidth=4 expandtab
+autocmd Filetype xml,xslt,diff,ruby color desert
+autocmd Filetype xml,xslt,diff,ruby set expandtab
+autocmd FileType javascript,html set ts=2 shiftwidth=2 expandtab
+autocmd FileType java set ts=2 shiftwidth=2 expandtab
+autocmd BufReadPre viper,.viper set filetype=lisp
 
 " Section: Plugin settings {{{1
 "--------------------------------------------------------------------------
@@ -420,6 +480,20 @@ let g:gitgutter_sign_modified_removed = '∙'
 " supertab
 let g:SuperTabLongestEnhanced=1
 let g:SuperTabLongestHighlight=1
+
+" ACK integration
+" set grepprg=ack-grep
+" set grepformat=%f:%l:%m
+" let g:ackprg="ack -H --nocolor --nogroup --column"
+let g:ackprg="ag --nocolor --nogroup --column"
+
+" Bubble text a-la textmate, (requires unimpaired plugin)
+" Bubble single lines
+nmap <C-Up> [e
+nmap <C-Down> ]e
+" Bubble multiple lines
+vmap <C-Up> [egv
+vmap <C-Down> ]egv
 
 " enable filetype plugins -- e.g., ftplugin/xml.vim
 filetype plugin indent on

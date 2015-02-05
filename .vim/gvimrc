@@ -7,7 +7,8 @@ hi SignColumn guibg=NONE
 " Command-Shift-F is fullscreen.
 nmap <D-F> :set fullscreen!<CR>
 
-set columns=80 lines=50
+set guifont=Inconsolata:h14 
+set columns=120 lines=46
 set guicursor+=a:blinkon0
 set guioptions=aigm
 set mousemodel=popup
