@@ -2,7 +2,8 @@ set background=dark
 colors molokai
 
 " Gutter color default is annoying. Make it blend in.
-hi SignColumn guibg=NONE
+" hi SignColumn guibg=NONE ctermbg=NONE
+hi clear SignColumn
 
 " Command-Shift-F is fullscreen.
 nmap <D-F> :set fullscreen!<CR>
