@@ -25,7 +25,9 @@ nmap \g :Gstatus<CR>
 nmap \l :setlocal number!<CR>:setlocal number?<CR>
 nmap \M :set noexpandtab tabstop=8 softtabstop=4 shiftwidth=4<CR>
 nmap \m :set expandtab tabstop=2 shiftwidth=2 softtabstop=2<CR>
+nmap \p :bprev<cr>
 nmap \o :set paste!<CR>:set paste?<CR>
+nmap \n :bnext<cr>
 nmap \q :nohlsearch<CR>
 nmap \s :setlocal invspell<CR>
 nmap \t :set expandtab tabstop=4 shiftwidth=4 softtabstop=4<CR>
@@ -42,8 +44,8 @@ nmap \<space> :nohlsearch<CR><CR>:<backspace>
 nmap <C-e> :e#<CR>
 
 " Move between open buffers.
-map <C-,> :bnext<CR>
-map <C-.> :bprev<CR>
+" map <C-<> :bprev<CR>
+" map <C->> :bnext<CR>
 
 " Map escape from insert mode
 inoremap jj <ESC>
@@ -119,7 +121,6 @@ nmap <D-π> :cprevious<CR>
 nmap <D-ç> :cclose<CR>
 
 " Steal => from textmate
-nnoremap <C-l> <C-w>l
 imap <C-l> <Space>=><Space>
 
 " Alt-W to delete a buffer and remove it from the list but keep the window
@@ -448,6 +449,7 @@ nmap ; :CtrlPBuffer<CR>
 let g:syntastic_enable_signs=1
 let g:syntastic_auto_jump=0
 let g:syntastic_stl_format = '[%E{Err: %fe #%e}%B{, }%W{Warn: %fw #%w}]'
+let g:syntastic_ruby_checkers = ['rubocop', 'mri']
 
 " GitGutter
 let g:gitgutter_sign_added = '∙'

@@ -36,7 +36,6 @@ fi
 # don't work.
 repos=(
 
-  https://github.com/Lokaltog/vim-easymotion.git
   https://github.com/MarcWeber/vim-addon-mw-utils.git
   https://github.com/airblade/vim-gitgutter.git
   https://github.com/altercation/vim-colors-solarized.git
@@ -51,13 +50,10 @@ repos=(
   https://github.com/groenewege/vim-less.git
   https://github.com/honza/vim-snippets.git
   https://github.com/jnurmine/Zenburn.git
-  https://github.com/junegunn/goyo.vim.git
   https://github.com/kchmck/vim-coffee-script.git
   https://github.com/kien/ctrlp.vim.git
-  https://github.com/leafgarland/typescript-vim.git
   https://github.com/mileszs/ack.vim.git
   https://github.com/ngmy/vim-rubocop.git
-  https://github.com/nono/vim-handlebars.git
   https://github.com/pangloss/vim-javascript.git
   https://github.com/rking/ag.vim.git
   https://github.com/scrooloose/nerdcommenter.git
@@ -68,7 +64,6 @@ repos=(
   https://github.com/tomtom/tlib_vim.git
   https://github.com/tpope/vim-fugitive.git
   https://github.com/tpope/vim-haml.git
-  https://github.com/tpope/vim-liquid.git
   https://github.com/tpope/vim-markdown.git
   https://github.com/tpope/vim-pathogen.git
   https://github.com/tpope/vim-rails.git
@@ -78,13 +73,17 @@ repos=(
   https://github.com/vim-scripts/Railscasts-Theme-GUIand256color.git
   https://github.com/vim-scripts/bufkill.vim.git
   https://github.com/vim-scripts/keepcase.vim.git
-  https://github.com/vim-scripts/oceandeep.git
-  https://github.com/wavded/vim-stylus.git
   )
 
 # DISABLED
 # https://github.com/Shougo/unite.vim.git
 # https://github.com/Shougo/vimproc.vim.git
+# https://github.com/Lokaltog/vim-easymotion.git
+# https://github.com/junegunn/goyo.vim.git
+# https://github.com/leafgarland/typescript-vim.git
+# https://github.com/nono/vim-handlebars.git
+# https://github.com/tpope/vim-liquid.git
+# https://github.com/vim-scripts/oceandeep.git
 
 # Here's a list of everything else to download in the format
 # <destination>;<url>[;<filename>]
