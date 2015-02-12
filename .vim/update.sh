@@ -67,12 +67,16 @@ repos=(
   https://github.com/tpope/vim-markdown.git
   https://github.com/tpope/vim-pathogen.git
   https://github.com/tpope/vim-rails.git
+  https://github.com/tpope/vim-ragtag.git
+  https://github.com/tpope/vim-repeat.git
   https://github.com/tpope/vim-sleuth.git
   https://github.com/tpope/vim-surround.git
   https://github.com/tpope/vim-unimpaired.git
+  https://github.com/vim-scripts/Colour-Sampler-Pack.git
   https://github.com/vim-scripts/Railscasts-Theme-GUIand256color.git
   https://github.com/vim-scripts/bufkill.vim.git
   https://github.com/vim-scripts/keepcase.vim.git
+  https://github.com/vim-scripts/ScrollColors.git
   )
 
 # DISABLED

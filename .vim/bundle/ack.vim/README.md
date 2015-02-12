@@ -20,8 +20,8 @@ rather than installing by drag and drop all required files into your `.vim` fold
 #### Manual (not recommended)
 
 Just
-[download](https://github.com/mileszs/ack.vim/archive/kb-improve-readme.zip) the
-plugin and put it in your `~/.vim/`(or `%PROGRAMFILES%/Vim/vimfiles` on windows)
+[download](https://github.com/mileszs/ack.vim/archive/master.zip) the
+plugin and extract it in `~/.vim/`(or `%PROGRAMFILES%/Vim/vimfiles` on windows)
 
 #### Vundle
 
@@ -129,3 +129,9 @@ with double dashes(--option) Thank's to @MiguelLatorre and @mannih
 
 * Fixes (again) highlight, now using negative look behind.
 * Change mappings `o` and `O` to behave as documented
+
+### 1.0.9 (unreleased)
+
+* Fix location list and layout of quickfix when using Dispatch (#154)
+* Fix the quick help overlay clobbering the list mappings
+
