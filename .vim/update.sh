@@ -46,6 +46,7 @@ repos=(
   https://github.com/elixir-lang/vim-elixir.git
   https://github.com/elzr/vim-json.git
   https://github.com/ervandew/supertab
+  https://github.com/fatih/vim-go.git
   https://github.com/garbas/vim-snipmate.git
   https://github.com/groenewege/vim-less.git
   https://github.com/honza/vim-snippets.git
