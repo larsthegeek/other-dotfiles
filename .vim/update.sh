@@ -35,7 +35,7 @@ fi
 # This is a list of all plugins which are available via Git repos. git:// URLs
 # don't work.
 repos=(
-
+  https://github.com/KurtPreston/vim-autoformat-rails.git
   https://github.com/MarcWeber/vim-addon-mw-utils.git
   https://github.com/airblade/vim-gitgutter.git
   https://github.com/altercation/vim-colors-solarized.git
@@ -45,7 +45,7 @@ repos=(
   https://github.com/docunext/closetag.vim.git
   https://github.com/elixir-lang/vim-elixir.git
   https://github.com/elzr/vim-json.git
-  https://github.com/ervandew/supertab
+  https://github.com/ervandew/supertab.git
   https://github.com/fatih/vim-go.git
   https://github.com/garbas/vim-snipmate.git
   https://github.com/groenewege/vim-less.git
@@ -55,6 +55,7 @@ repos=(
   https://github.com/kien/ctrlp.vim.git
   https://github.com/mileszs/ack.vim.git
   https://github.com/ngmy/vim-rubocop.git
+  https://github.com/othree/html5.vim.git
   https://github.com/pangloss/vim-javascript.git
   https://github.com/rking/ag.vim.git
   https://github.com/scrooloose/nerdcommenter.git
