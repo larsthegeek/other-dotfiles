@@ -409,7 +409,7 @@ endif
 autocmd User Rails let b:surround_{char2nr('-')} = "<% \r %>" " displays <% %> correctly
 
 " Additional Ruby Syntax Highlighting
-autocmd BufRead,BufNewFile {Capfile,Gemfile,Rakefile,Thorfile,.prawn,Procfile,config.ru,.caprc,.irbrc,irb_tempfile*} set ft=ruby
+autocmd BufRead,BufNewFile {Capfile,Gemfile,Rakefile,Thorfile,*.prawn,Procfile,config.ru,.caprc,.irbrc,irb_tempfile*} set ft=ruby
 
 " RDOC Syntax Highlighting
 autocmd BufRead,BufNewFile *.rd,*.rdoc set filetype=rdoc
