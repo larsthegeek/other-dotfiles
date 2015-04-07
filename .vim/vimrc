@@ -10,6 +10,9 @@
 " Section: Key mappings {{{1
 "--------------------------------------------------------------------------
 
+" reset the world
+autocmd!
+
 " useful macros I use the most
 nmap \a :set formatoptions-=a<CR>:echo "autowrap disabled"<CR>
 nmap \A :set formatoptions+=a<CR>:echo "autowrap enabled"<CR>
@@ -137,40 +140,40 @@ command -bar Hexmode call ToggleHex()
 
 " helper function to toggle hex mode
 function ToggleHex()
-  " hex mode should be considered a read-only operation
-  " save values for modified and read-only for restoration later,
-  " and clear the read-only flag for now
-  let l:modified=&mod
-  let l:oldreadonly=&readonly
-  let &readonly=0
-  let l:oldmodifiable=&modifiable
-  let &modifiable=1
-  if !exists("b:editHex") || !b:editHex
-    " save old options
-    let b:oldft=&ft
-    let b:oldbin=&bin
-    " set new options
-    setlocal binary " make sure it overrides any textwidth, etc.
-    let &ft="xxd"
-    " set status
-    let b:editHex=1
-    " switch to hex editor
-    %!xxd
-  else
-    " restore old options
-    let &ft=b:oldft
-    if !b:oldbin
-      setlocal nobinary
+    " hex mode should be considered a read-only operation
+    " save values for modified and read-only for restoration later,
+    " and clear the read-only flag for now
+    let l:modified=&mod
+    let l:oldreadonly=&readonly
+    let &readonly=0
+    let l:oldmodifiable=&modifiable
+    let &modifiable=1
+    if !exists("b:editHex") || !b:editHex
+        " save old options
+        let b:oldft=&ft
+        let b:oldbin=&bin
+        " set new options
+        setlocal binary " make sure it overrides any textwidth, etc.
+        let &ft="xxd"
+        " set status
+        let b:editHex=1
+        " switch to hex editor
+        %!xxd
+    else
+        " restore old options
+        let &ft=b:oldft
+        if !b:oldbin
+            setlocal nobinary
+        endif
+        " set status
+        let b:editHex=0
+        " return to normal editing
+        %!xxd -r
     endif
-    " set status
-    let b:editHex=0
-    " return to normal editing
-    %!xxd -r
-  endif
-  " restore values for modified and read only state
-  let &mod=l:modified
-  let &readonly=l:oldreadonly
-  let &modifiable=l:oldmodifiable
+    " restore values for modified and read only state
+    let &mod=l:modified
+    let &readonly=l:oldreadonly
+    let &modifiable=l:oldmodifiable
 endfunction
 
 
@@ -215,47 +218,57 @@ nnoremap <C-w>l :call KeepCurrentLine('l')<CR>
 " URL: http://www.vim.org/tips/tip.php?tip_id=1055
 cno $c e <C-\>eCurrentFileDir()<CR>
 function! CurrentFileDir()
-   return "e " . expand("%:p:h") . "/"
+    return "e " . expand("%:p:h") . "/"
 endfunction
 
 cno $n Rename <C-\>eRenameCurrentFileAtDir()<CR>
 function! RenameCurrentFileAtDir()
-   return "Rename " . expand("%:p:h") . "/"
+    return "Rename " . expand("%:p:h") . "/"
 endfunction
 
 cno $s save <C-\>eSaveCurrentFileAtDir()<CR>
 function! SaveCurrentFileAtDir()
-   return "saveas " . expand("%:p:h") . "/"
+    return "saveas " . expand("%:p:h") . "/"
 endfunction
 
 " Section: Vim options {{{1
 "--------------------------------------------------------------------------
 
 set autoindent              " Carry over indenting from previous line
-set autoread                " Don't bother me hen a file changes
+set autoread                " Don't bother me when a file changes
 set autowrite               " Write on :next/:prev/^Z
 set backspace=indent,eol,start
-                            " Allow backspace beyond insertion point
+" Allow backspace beyond insertion point
 set cindent                 " Automatic program indenting
 set cinkeys-=0#             " Comments don't fiddle with indenting
 set cino=(0                 " Indent newlines after opening parenthesis
 set commentstring=\ \ #%s   " When folds are created, add them to this
 set copyindent              " Make autoindent use the same chars as prev line
-
+set dictionary+=/usr/share/dict/words thesaurus+=/opt/thesaurus/mthesaur.txt
 set directory-=.            " Don't store temp files in cwd
 set encoding=utf8           " UTF-8 by default
 set expandtab               " No tabs
 set fileformats=unix,dos,mac  " Prefer Unix
 set fillchars=vert:\ ,stl:\ ,stlnc:\ ,fold:-,diff:┄
-                            " Unicode chars for diffs/folds, and rely on
-                            " Colors for window borders
+" Unicode chars for diffs/folds, and rely on
+" Colors for window borders
 silent! set foldmethod=marker " Use braces by default
+
+" Lines with equal indent form a fold.
+" set foldmethod=indent
+" set foldmethod=syntax
+set foldexpr=RubyMethodFold(v:lnum)
+" set foldmethod=expr
+" set foldlevel=1
+" set foldnestmax=10
+set nofoldenable
+
 set formatoptions=tcqn1     " t - autowrap normal text
-                            " c - autowrap comments
-                            " q - gq formats comments
-                            " n - autowrap lists
-                            " 1 - break _before_ single-letter words
-                            " 2 - use indenting from 2nd line of para
+" c - autowrap comments
+" q - gq formats comments
+" n - autowrap lists
+" 1 - break _before_ single-letter words
+" 2 - use indenting from 2nd line of para
 set hidden                  " Don't prompt to save hidden windows until exit
 set history=200             " How many lines of history to save
 set hlsearch                " Hilight searching
@@ -263,15 +276,17 @@ set ignorecase              " Case insensitive
 set incsearch               " Search as you type
 set infercase               " Completion recognizes capitalization
 set laststatus=2            " Always show the status bar
+set lazyredraw
 set linebreak               " Break long lines by word, not char
-set listchars=tab:▶\ ,trail:◀,extends:»,precedes:«
-                            " Unicode characters for various things
+" set listchars=tab:▶\ ,trail:◀,extends:»,precedes:«
+set listchars=tab:▸\ ,trail:·,eol:¬,nbsp:_,extends:❯,precedes:❮
+" Unicode characters for various things
 set matchtime=2             " Tenths of second to hilight matching paren
 set modelines=5             " How many lines of head & tail to look for ml's
 " silent! set mouse=nvc       " Use the mouse, but not in insert mode
 set mouse=a
 set nonumber                " No line numbers to start
-set nowrap	                " No wrapping to start
+set nowrap                  " No wrapping to start
 set visualbell t_vb=        " No flashing or beeping at all
 set printoptions=paper:letter " US paper
 set ruler                   " Show row/col and percentage
@@ -279,14 +294,16 @@ set scroll=4                " Number of lines to scroll with ^U/^D
 set scrolloff=15            " Keep cursor away from this many chars top/bot
 set shiftround              " Shift to certain columns, not just n spaces
 set shiftwidth=4            " Number of spaces to shift for autoindent or >,<
-set shortmess+=A            " Don't bother me when a swapfile exists
+set shortmess+=AatI         " Don't bother me when a swapfile exists
 set showbreak=              " Show for lines that have been wrapped, like Emacs
 set showmatch               " Hilight matching braces/parens/etc.
 set sidescrolloff=3         " Keep cursor away from this many chars left/right
 set smartcase               " Lets you search for ALL CAPS
+set smartindent
 set softtabstop=4           " Spaces 'feel' like tabs
 set suffixes+=.pyc          " Ignore these files when tab-completing
-" set ttyfast
+set synmaxcol=1200          " Syntax coloring long lines bogs down vim
+set ttyfast
 set ttymouse=xterm2
 set tabstop=4               " The One True Tab
 set notitle                 " Don't set the title of the Vim window
@@ -336,10 +353,10 @@ command! CLEAN retab | TEOL
 
 " hightlight more than 80 characters
 function! HighlightTooLongLines()
-  highlight def link RightMargin Error
-  if &textwidth != 0
-    exec 'match RightMargin /\%<' . (&textwidth + 4) . 'v.\%>' . (&textwidth + 2) . 'v/'
-  endif
+    highlight def link RightMargin Error
+    if &textwidth != 0
+        exec 'match RightMargin /\%<' . (&textwidth + 4) . 'v.\%>' . (&textwidth + 2) . 'v/'
+    endif
 endfunction
 
 " Rename.vim  -  Rename a buffer within Vim and on the disk
@@ -362,6 +379,60 @@ function! Rename(name, bang)
     else
         echoerr v:errmsg
     endif
+endfunction
+
+function! GetSynInfo()
+    let stack = synstack(line("."), col("."))
+
+    let info = ""
+
+    for synid in reverse(stack)
+        if strlen(info)
+            let info .= " < "
+        endif
+
+        let syn = GetSynDict(synid)
+        let info .= GetSynInfoString(syn)
+    endfor
+
+    return info
+endfunction
+
+function! GetSynInfoString(syndict)
+    if a:syndict["syn"] != a:syndict["hi"]
+        let add_hi = a:syndict["hi"]." "
+    else
+        let add_hi = ""
+    endif
+
+    return a:syndict["syn"]." (".add_hi."fg=".a:syndict["fg"]." bg=".a:syndict["bg"].")"
+endfunction
+
+function! GetHereSynId(trans)
+    return synID(line("."), col("."), a:trans)
+endfunction
+
+function! GetSynDict(synid)
+    let hiid = synIDtrans(a:synid)
+
+    let syn = synIDattr(a:synid, "name")
+    let hi = synIDattr(hiid, "name")
+    let fg = synIDattr(hiid, "fg")
+    let bg = synIDattr(hiid, "bg")
+
+    return {"syn":syn, "hi":hi, "fg":fg, "bg":bg}
+endfunction
+
+function! RubyMethodFold(line)
+    let stack = synstack(a:line, (match(getline(a:line), '^\s*\zs'))+1)
+
+    for synid in stack
+        if GetSynInfoString(GetSynDict(synid)) ==? "rubyMethodBlock" || GetSynInfoString(GetSynDict(synid)) ==? "rubyDefine" || GetSynInfoString(GetSynDict(synid)) ==? "rubyDocumentation"
+            return 1
+        endif
+    endfor
+
+    return 0
 endfunction
 
 function! <SID>StripTrailingWhitespaces()
@@ -389,19 +460,19 @@ function! Preserve(command)
 endfunction
 
 " autocmd BufWritePre *.py,*.js,*.erb,*.rb :call <SID>StripTrailingWhitespaces()
-" autocmd BufWritePre *.yml,*.html,*.py,*.js,*.erb,*.rb,*.css,*.sass,*.scss :call Preserve("normal gg=G") 
-" autocmd FileType ruby,eruby,c,cpp,java,css,less,sass,scss,csv,json,yaml,javascript,html autocmd BufWritePre <buffer> :call Preserve("normal gg=G") 
+" autocmd BufWritePre *.yml,*.html,*.py,*.js,*.erb,*.rb,*.css,*.sass,*.scss :call Preserve("normal gg=G")
+" autocmd FileType ruby,eruby,c,cpp,java,css,less,sass,scss,csv,json,yaml,javascript,html autocmd BufWritePre <buffer> :call Preserve("normal gg=G")
 
 " Section: Python specifics {{{1
 "--------------------------------------------------------------------------
 
-if has('python')
-python << EOF
-import os
-import sys
-sys.path.append(os.path.join(os.getenv('HOME'), '.vim', 'python'))
-EOF
-endif
+" if has('python')
+"    python << EOF
+"    import os
+"    import sys
+"    sys.path.append(os.path.join(os.getenv('HOME'), '.vim', 'python'))
+"    EOF
+" endif
 
 " Section: Ruby/Rails specifics {{{1
 "--------------------------------------------------------------------------
@@ -467,7 +538,7 @@ let g:ctrlp_map = '<Leader>t'
 let g:ctrlp_match_window_bottom = 0
 let g:ctrlp_match_window_reversed = 0
 let g:ctrlp_custom_ignore = '\v\~$|\.(o|swp|pyc|wav|mp3|ogg|blend)$|(^|[/\\])\.(hg|git|bzr)($|[/\\])|__init__\.py'
-let g:ctrlp_working_path_mode = 'ra' 
+let g:ctrlp_working_path_mode = 'ra'
 let g:ctrlp_dotfiles = 0
 let g:ctrlp_switch_buffer = 0
 nmap ; :CtrlPBuffer<CR>
@@ -510,31 +581,32 @@ filetype plugin indent on
 
 " Helper to initialize Zenburn colors in 256-color mode.
 function! ColorTermZenburn()
-  colorscheme zenburn
-  highlight Normal ctermbg=234
-  highlight CursorLine ctermbg=236
-  let g:zenburn_high_Contrast = 1
+    colorscheme zenburn
+    highlight Normal ctermbg=234
+    highlight CursorLine ctermbg=236
+    let g:zenburn_high_Contrast = 1
 endfunction
 
 " Make sure colored syntax mode is on, and make it Just Work with newer 256
 " color terminals like iTerm2.
 if !has('gui_running')
-  if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
-    set t_Co=256
-    call ColorTermZenburn()
-  elseif has("terminfo")
-    colorscheme default
-    set t_Co=8
-    set t_Sf=[3%p1%dm
-    set t_Sb=[4%p1%dm
-  else
-    colorscheme default
-    set t_Co=8
-    set t_Sf=[3%dm
-    set t_Sb=[4%dm
-  endif
+    if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
+        set t_Co=256
+        call ColorTermZenburn()
+    elseif has("terminfo")
+        colorscheme default
+        set t_Co=8
+        set t_Sf=[3%p1%dm
+        set t_Sb=[4%p1%dm
+    else
+        colorscheme default
+        set t_Co=8
+        set t_Sf=[3%dm
+        set t_Sb=[4%dm
+    endif
 endif
-syntax on
+syntax enable
+syntax sync fromstart
 
 " window splits & ruler were too bright - change to white on grey
 " (shouldn't change GUI or non-color term appearance)

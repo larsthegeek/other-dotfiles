@@ -58,12 +58,12 @@ repos=(
   https://github.com/othree/html5.vim.git
   https://github.com/pangloss/vim-javascript.git
   https://github.com/rking/ag.vim.git
-  https://github.com/scrooloose/nerdcommenter.git
   https://github.com/scrooloose/nerdtree.git
   https://github.com/scrooloose/syntastic.git
   https://github.com/terryma/vim-multiple-cursors.git
   https://github.com/tomasr/molokai.git
   https://github.com/tomtom/tlib_vim.git
+  https://github.com/tpope/vim-commentary
   https://github.com/tpope/vim-fugitive.git
   https://github.com/tpope/vim-haml.git
   https://github.com/tpope/vim-markdown.git
@@ -84,6 +84,7 @@ repos=(
 # DISABLED
 # https://github.com/Shougo/unite.vim.git
 # https://github.com/Shougo/vimproc.vim.git
+# https://github.com/scrooloose/nerdcommenter.git
 # https://github.com/Lokaltog/vim-easymotion.git
 # https://github.com/junegunn/goyo.vim.git
 # https://github.com/leafgarland/typescript-vim.git
