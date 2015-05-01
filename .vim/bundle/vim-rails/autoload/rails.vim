@@ -2537,7 +2537,7 @@ function! s:completion_filter(results, A, ...) abort
   if exists('*projectionist#completion_filter')
     return projectionist#completion_filter(a:results, a:A, a:0 ? a:1 : '/')
   endif
-  let results = uniq(sort(type(a:results) == type("") ? split(a:results,"\n") : copy(a:results)))
+  let results = s:uniq(sort(type(a:results) == type("") ? split(a:results,"\n") : copy(a:results)))
   call filter(results,'v:val !~# "\\~$"')
   if a:A =~# '\*'
     let regex = s:gsub(a:A,'\*','.*')
@@ -3879,7 +3879,7 @@ function! rails#buffer_syntax()
           syn keyword rubyRailsTestControllerMethod assert_response assert_redirected_to assert_template assert_recognizes assert_generates assert_routing assert_dom_equal assert_dom_not_equal assert_select assert_select_rjs assert_select_encoded assert_select_email assert_tag assert_no_tag
         endif
       elseif buffer.type_name('spec')
-        syn keyword rubyRailsTestMethod describe context it its specify shared_context shared_examples shared_examples_for shared_context include_examples include_context it_should_behave_like it_behaves_like before after around subject fixtures controller_name helper_name scenario feature background described_class
+        syn keyword rubyRailsTestMethod describe context it its specify shared_context shared_examples shared_examples_for shared_context include_examples include_context it_should_behave_like it_behaves_like before after around subject fixtures controller_name helper_name scenario feature background given described_class
         syn match rubyRailsTestMethod '\<let\>!\='
         syn keyword rubyRailsTestMethod violated pending expect expect_any_instance_of allow allow_any_instance_of double instance_double mock mock_model stub_model xit
         syn match rubyRailsTestMethod '\.\@<!\<stub\>!\@!'
