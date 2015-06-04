@@ -485,6 +485,10 @@ autocmd BufRead,BufNewFile {Capfile,Gemfile,Rakefile,Thorfile,*.prawn,Procfile,c
 " RDOC Syntax Highlighting
 autocmd BufRead,BufNewFile *.rd,*.rdoc set filetype=rdoc
 
+" simple function navigation
+:nmap [[ ?def <CR>
+:nmap ]] /def <CR>
+
 " Folding for Tomdoc and other ruby comments
 " autocmd FileType ruby,eruby set foldmethod=expr | set foldexpr=getline(v:lnum)=~'^\\s*#'
 

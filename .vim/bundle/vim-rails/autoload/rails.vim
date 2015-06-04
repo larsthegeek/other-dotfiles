@@ -897,14 +897,12 @@ function! s:app_ruby_script_command(cmd) dict abort
   endif
 endfunction
 
-function! s:app_prepare_rails_command(cmd) dict abort
-  if self.has_path('.zeus.sock') && a:cmd =~# '^\%(console\|dbconsole\|destroy\|generate\|server\|runner\)\>'
-    return 'zeus '.a:cmd
-  elseif self.has_path('bin/rails')
+function! s:app_static_rails_command(cmd) dict abort
+  if self.has_path('bin/rails')
     let cmd = 'bin/rails '.a:cmd
   elseif self.has_path('script/rails')
     let cmd = 'script/rails '.a:cmd
-  elseif self.has_path('script/' . matchstr(a:cmd, '\w\+'))
+  elseif a:cmd =~# '^\S' && self.has_path('script/' . matchstr(a:cmd, '\S\+'))
     let cmd = 'script/'.a:cmd
   elseif self.has('bundler')
     return 'bundle exec rails ' . a:cmd
@@ -912,6 +910,13 @@ function! s:app_prepare_rails_command(cmd) dict abort
     return 'rails '.a:cmd
   endif
   return self.ruby_script_command(cmd)
+endfunction
+
+function! s:app_prepare_rails_command(cmd) dict abort
+  if self.has_path('.zeus.sock') && a:cmd =~# '^\%(console\|dbconsole\|destroy\|generate\|server\|runner\)\>'
+    return 'zeus '.a:cmd
+  endif
+  return self.static_rails_command(a:cmd)
 endfunction
 
 function! s:app_start_rails_command(cmd, ...) dict abort
@@ -967,7 +972,7 @@ function! s:app_eval(ruby,...) dict abort
   return v:shell_error == 0 ? results : def
 endfunction
 
-call s:add_methods('app', ['ruby_command','ruby_script_command','prepare_rails_command','execute_rails_command','start_rails_command','eval'])
+call s:add_methods('app', ['ruby_command','ruby_script_command','static_rails_command','prepare_rails_command','execute_rails_command','start_rails_command','eval'])
 
 " }}}1
 " Commands {{{1
@@ -1271,7 +1276,7 @@ function! s:readable_test_file_candidates() dict abort
     let tests = [
           \ 'test/models/' . self.model_name() . '_test.rb',
           \ 'test/unit/' . self.model_name() . '_test.rb']
-  elseif f =~# '\<app/.*\.rb'
+  elseif f =~# '\<app/.*/.*\.rb'
     let file = fnamemodify(f,":r")
     let test_file = s:sub(file,'<app/','test/') . '_test.rb'
     let spec_file = s:sub(file,'<app/','spec/') . '_spec.rb'
@@ -2155,6 +2160,36 @@ function! s:RailsFind()
   let buffer = rails#buffer()
   let format = s:format()
 
+  let ssext = ['css', 'css.*', 'scss', 'sass']
+  if buffer.type_name('stylesheet')
+    let res = s:findit('^\s*\*=\s*require\s*["'']\=\([^"'' ]*\)', '\1')
+    if res != ""|return rails#app().resolve_asset(res, ssext)."\napp/assets/stylesheets/".res.".css"|endif
+    let res = s:findit('^\s*@import\s*\%(url(\)\=["'']\=\([^"'' ]*\)', '\1')
+    if res != ""
+      let base = expand('%:h')
+      let rel = s:sub(res, '\ze[^/]*$', '_')
+      for ext in ['css', 'css.scss', 'css.sass', 'scss', 'sass']
+        for name in [res.'.'.ext, res.'.'.ext.'.erb', rel.'.'.ext, rel.'.'.ext.'.erb']
+          if filereadable(base.'/'.name)
+            return base.'/'.name
+          endif
+        endfor
+      endfor
+      let asset = rails#app().resolve_asset(res, ssext)
+      if empty(asset) && expand('%:e') =~# '^s[ac]ss$'
+        let asset = rails#app().resolve_asset(rel, ssext)
+      endif
+      return empty(asset) ? 'app/assets/stylesheets/'.res : asset
+    endif
+  endif
+
+  let jsext = ['js', 'js.*', 'jst', 'jst.*', 'coffee']
+  if buffer.type_name('javascript')
+    let res = s:findit('^\s*//=\s*require\s*["'']\=\([^"'' ]*\)', '\1')
+    if res != ""|return rails#app().resolve_asset(res, jsext)."\napp/assets/javascripts/".res.".js"|endif
+    return expand("<cfile>")
+  endif
+
   let res = s:findit('\v\s*<require\s*\(=\s*File.dirname\(__FILE__\)\s*\+\s*[:'."'".'"](\f+)>.=',expand('%:h').'/\1')
   if res != ""|return res.(fnamemodify(res,':e') == '' ? '.rb' : '')|endif
 
@@ -2250,41 +2285,14 @@ function! s:RailsFind()
     return rails#app().resolve_asset(res)."\npublic/images/".res
   endif
 
-  let ssext = ['css', 'css.*', 'scss', 'sass']
   let res = s:findfromview('stylesheet[_-]\%(link_tag\|path\|url\)\|\%(path\|url\)_to_stylesheet','\1')
   if res != ""
-    return rails#app().resolve_asset(res, ssest)."\npublic/stylesheets/".res.".css"
-  endif
-  if buffer.type_name('stylesheet')
-    let res = s:findit('^\s*\*=\s*require\s*["'']\=\([^"'' ]*\)', '\1')
-    if res != ""|return rails#app().resolve_asset(res, ssext)."\napp/assets/stylesheets/".res.".css"|endif
-    let res = s:findit('^\s*@import\s*\%(url(\)\=["'']\=\([^"'' ]*\)', '\1')
-    if res != ""
-      let base = expand('%:h')
-      let rel = s:sub(res, '\ze[^/]*$', '_')
-      for ext in ['css', 'css.scss', 'css.sass', 'scss', 'sass']
-        for name in [res.'.'.ext, res.'.'.ext.'.erb', rel.'.'.ext, rel.'.'.ext.'.erb']
-          if filereadable(base.'/'.name)
-            return base.'/'.name
-          endif
-        endfor
-      endfor
-      let asset = rails#app().resolve_asset(res, ssext)
-      if empty(asset) && expand('%:e') =~# '^s[ac]ss$'
-        let asset = rails#app().resolve_asset(rel, ssext)
-      endif
-      return empty(asset) ? 'app/assets/stylesheets/'.res : asset
-    endif
+    return rails#app().resolve_asset(res, ssext)."\npublic/stylesheets/".res.".css"
   endif
 
-  let jsext = ['js', 'js.*', 'jst', 'jst.*', 'coffee']
   let res = s:sub(s:findfromview('javascript_\%(include_tag\|path\|url\)\|\%(path\|url\)_to_javascript','\1'),'/defaults>','/application')
   if res != ""
     return rails#app().resolve_asset(res, jsext)."\npublic/javascripts/".res.".js"
-  endif
-  if buffer.type_name('javascript')
-    let res = s:findit('^\s*//=\s*require\s*["'']\=\([^"'' ]*\)', '\1')
-    if res != ""|return rails#app().resolve_asset(res, jsext)."\napp/assets/javascripts/".res.".js"|endif
   endif
 
   if buffer.type_name('controller', 'mailer')
@@ -2503,7 +2511,6 @@ endfunction
 
 function! s:BufProjectionCommands()
   call s:addfilecmds("view")
-  call s:addfilecmds("controller")
   call s:addfilecmds("migration")
   call s:addfilecmds("schema")
   call s:addfilecmds("layout")
@@ -2685,7 +2692,7 @@ function! s:define_navcommand(name, projection, ...) abort
           \ (prefix =~# 'D' ? '-range=0 ' : '') .
           \ '-complete=customlist,'.s:sid.'CommandList ' .
           \ prefix . name . ' :execute s:CommandEdit(' .
-          \ string((prefix =~# 'D' ? '<line1>' : '') . s:sub(prefix, '^R', '') . "<bang>") . ',' .
+          \ string((prefix =~# 'D' ? '<line1>' : '') . prefix . "<bang>") . ',' .
           \ string(a:name) . ',' . string(a:projection) . ',<f-args>)' .
           \ (a:0 ? '|' . a:1 : '')
   endfor
@@ -2975,28 +2982,6 @@ function! s:layoutEdit(cmd,...)
   return s:edit(a:cmd,s:sub(file,'^/',''))
 endfunction
 
-function! s:controllerEdit(cmd,...)
-  let suffix = '.rb'
-  let template = "class %S < ApplicationController\nend"
-  if a:0 == 0
-    let controller = s:controller(1)
-    if rails#buffer().type_name() =~# '^view\%(-layout\|-partial\)\@!'
-      let jump = '#'.expand('%:t:r')
-    else
-      let jump = ''
-    endif
-  else
-    let controller = matchstr(a:1, '[^#!]*')
-    let jump = matchstr(a:1, '[#!].*')
-  endif
-  if rails#app().has_file("app/controllers/".controller."_controller.rb") || !rails#app().has_file("app/controllers/".controller.".rb")
-    let template = "class %SController < ApplicationController\nend"
-    let suffix = "_controller".suffix
-  endif
-  return rails#buffer().open_command(a:cmd, controller . jump, 'controller',
-        \ [{'template': template, 'pattern': 'app/controllers/*'.suffix}])
-endfunction
-
 function! s:stylesheetEdit(cmd,...)
   let name = a:0 ? a:1 : s:controller(1)
   if rails#app().has('sass') && rails#app().has_file('public/stylesheets/sass/'.name.'.sass')
@@ -3102,15 +3087,16 @@ function! s:projection_pairs(options)
 endfunction
 
 function! s:r_warning(cmd) abort
-  if empty(a:cmd) && !exists('s:r_warning')
-    let s:r_warning = 1
-    return '|echohl WarningMsg|echomsg ":R navigation commands are deprecated. Use :E commands instead."|echohl None'
+  if a:cmd =~# 'R\|^$'
+    let old = s:sub(a:cmd, '^$', 'R')
+    let instead = s:sub(s:sub(a:cmd, '^R', ''), '^$', 'E')
+    return '|echohl WarningMsg|echomsg ":'.old.' navigation commands are deprecated. Use :'.instead.' commands instead."|echohl None'
   endif
   return ''
 endfunction
 
 function! s:readable_open_command(cmd, argument, name, projections) dict abort
-  let cmd = s:editcmdfor(a:cmd)
+  let cmd = s:editcmdfor(s:sub(a:cmd, '^R', ''))
   let djump = ''
   if a:argument =~ '[#!]\|:\d*\%(:in\)\=$'
     let djump = matchstr(a:argument,'!.*\|#\zs.*\|:\zs\d*\ze\%(:in\)\=$')
@@ -4549,6 +4535,10 @@ endfunction
 let s:default_projections = {
       \ 'config/environments/*.rb': {'type': 'environment'},
       \ 'config/application.rb': {'type': 'environment'},
+      \ 'app/controllers/*_controller.rb': {
+      \   'type': 'controller',
+      \   'template': ["module {camelcase|capitalize|colons}Controller < ApplicationController", "end"],
+      \   'affinity': 'controller'},
       \ 'app/helpers/*_helper.rb': {
       \   'type': 'helper',
       \   'template': ["module {camelcase|capitalize|colons}Helper", "end"],
@@ -4859,17 +4849,26 @@ function! rails#buffer_setup() abort
   let &l:makeprg = self.app().rake_command('static')
   let &l:errorformat .= ',chdir '.escape(self.app().path(), ',')
 
-  if self.type_name('test', 'spec', 'cucumber')
-    call self.setvar('dispatch', ':Runner')
-  elseif self.name() ==# 'Rakefile'
-    call self.setvar('dispatch', ':Rake --tasks')
-  elseif self.name() =~# '^\%(app\|config\|db\|lib\|log\|README\)'
-    call self.setvar('dispatch', ':Rake')
-  elseif self.name() =~# '^public'
-    call self.setvar('dispatch', ':Preview')
+  if exists(':Dispatch') == 2 && !exists('g:autoloaded_dispatch')
+    runtime! autoload/dispatch.vim
   endif
-  if empty(self.getvar('start'))
-    call self.setvar('start', ':Server')
+  if exists('*dispatch#dir_opt')
+    let dir = dispatch#dir_opt(self.app().path())
+  endif
+
+  if self.name() =~# '^public'
+    call self.setvar('dispatch', ':Preview')
+  elseif self.type_name('test', 'spec', 'cucumber')
+    call self.setvar('dispatch', ':Runner')
+  elseif self.name() =~# '^\%(app\|config\|db\|lib\|log\|README\|Rakefile\)'
+    if exists('dir')
+      call self.setvar('dispatch',
+            \ dir . '-compiler=rails ' .
+            \ self.app().rake_command('static') .
+            \ ' `=rails#buffer(' . self['#'] . ').default_rake_task(v:lnum)`')
+    else
+      call self.setvar('dispatch', ':Rake')
+    endif
   endif
 endfunction
 
