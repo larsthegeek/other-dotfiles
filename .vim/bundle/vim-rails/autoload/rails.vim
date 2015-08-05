@@ -3213,7 +3213,6 @@ function! s:Alternate(cmd,line1,line2,count,...) abort
       let file = rails#buffer().alternate(a:count)
     endif
     let has_path = !empty(file) && rails#app().has_path(file)
-    let g:confirm = histget(':', -1)
     let confirm = &confirm || (histget(':', -1) =~# '\%(^\||\)\s*conf\%[irm]\>')
     if confirm && !a:count && !has_path
       let projected = rails#buffer().projected_with_raw('alternate')
@@ -3237,7 +3236,7 @@ function! s:Alternate(cmd,line1,line2,count,...) abort
       call s:error("No alternate file defined")
       return ''
     else
-      return s:find(a:cmd, './' . file)
+      return s:find(a:cmd, rails#app().path(file))
     endif
   endif
 endfunction
@@ -3766,7 +3765,7 @@ function! rails#buffer_syntax()
       if buffer.type_name('mailer')
         syn keyword rubyRailsMethod logger url_for polymorphic_path polymorphic_url
         syn keyword rubyRailsRenderMethod mail render
-        syn keyword rubyRailsControllerMethod attachments default helper helper_attr helper_method
+        syn keyword rubyRailsControllerMethod attachments default helper helper_attr helper_method layout
       endif
       if buffer.type_name('helper','view')
         syn keyword rubyRailsViewMethod polymorphic_path polymorphic_url
@@ -4514,6 +4513,15 @@ let s:default_projections = {
       \    ],
       \    "type": "controller"
       \  },
+      \  "app/controllers/concerns/*.rb": {
+      \    "affinity": "controller",
+      \    "template": [
+      \      "module {camelcase|capitalize|colons}",
+      \      "\tinclude ActiveSupport::Concern",
+      \      "end"
+      \    ],
+      \    "type": "controller"
+      \  },
       \  "app/helpers/*_helper.rb": {
       \    "affinity": "controller",
       \    "template": ["module {camelcase|capitalize|colons}Helper", "end"],
@@ -4545,6 +4553,7 @@ let s:default_projections = {
       \    "type": "initializer"
       \  },
       \  "gems.rb": {"alternate": "gems.locked", "type": "lib"},
+      \  "lib/*.rb": {"type": "lib"},
       \  "lib/tasks/*.rake": {"type": "task"}
       \}
 
@@ -4716,7 +4725,7 @@ let s:has_projections = {
 
 let s:projections_for_gems = {}
 function! s:app_projections() dict abort
-  let dict = deepcopy(s:default_projections)
+  let dict = s:combine_projections({}, s:default_projections)
   for [k, v] in items(s:has_projections)
     if self.has(k)
       call s:combine_projections(dict, v)
@@ -4856,7 +4865,7 @@ function! s:readable_projected_with_raw(key, ...) dict abort
   let all = self.app().projections()
   let mine = []
   if has_key(all, f)
-    let mine += map(s:getlist(all[f], a:key), 's:expand_placeholders(v:val, a:0 ? a:1 : {})')
+    let mine += map(s:getlist(all[f], a:key), '[s:expand_placeholders(v:val, a:0 ? a:1 : {}), v:val]')
   endif
   for pattern in reverse(sort(filter(keys(all), 'v:val =~# "^[^*{}]*\\*[^*{}]*$"'), s:function('rails#lencmp')))
     let [prefix, suffix; _] = split(pattern, '\*', 1)
@@ -5018,7 +5027,10 @@ function! rails#buffer_setup() abort
     let dir = dispatch#dir_opt(self.app().path())
   endif
 
-  if self.name() =~# '^public'
+  let dispatch = self.projected('dispatch')
+  if !empty(dispatch) && exists(dir)
+    call self.setvar('dispatch', dir . dispatch[0])
+  elseif self.name() =~# '^public'
     call self.setvar('dispatch', ':Preview')
   elseif self.type_name('test', 'spec', 'cucumber')
     call self.setvar('dispatch', ':Runner')
